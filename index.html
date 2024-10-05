@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Tracker</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+            position: relative;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #message {
+            position: absolute;
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 1.5em;
+            pointer-events: none; /* Prevents the text from blocking mouse events */
+        }
+    </style>
+</head>
+<body>
+
+<div id="message">Under me is a pointer of an idiot.</div>
+
+<script>
+    const message = document.getElementById('message');
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Update mouse coordinates on mouse move
+    document.addEventListener('mousemove', (event) => {
+        mouseX = event.pageX;
+        mouseY = event.pageY;
+    });
+
+    // Teleport message to mouse position every second
+    setInterval(() => {
+        message.style.left = (mouseX) + 'px';
+        message.style.top = (mouseY - 30) + 'px'; // Adjust position above the cursor
+    }, 0);
+</script>
+
+</body>
+</html>
