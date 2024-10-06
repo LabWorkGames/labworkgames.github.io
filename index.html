@@ -3,45 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mouse Tracker</title>
+    <title>Philips PowerPro Compact FC9331/09</title>
     <style>
         body {
+            background-color: #f5f5f5;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
             margin: 0;
-            height: 100vh;
-            overflow: hidden; /* Prevent scrolling */
-            position: relative;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            overflow: hidden; /* Prevents scrolling */
         }
-        #message {
-            position: absolute;
-            color: #ff0000;
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+        p {
+            font-size: 1.25em;
+            margin: 10px 0;
+        }
+        .threat {
+            color: #e74c3c;
             font-weight: bold;
             font-size: 1.5em;
-            pointer-events: none; /* Prevents the text from blocking mouse events */
+            animation: blink 1s infinite;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div id="message">Under me is a pointer of an idiot.</div>
+<h1>Philips PowerPro Compact FC9331/09</h1>
+<p id="initialQuestion">Do you want to buy the Philips PowerPro Compact FC9331/09?</p>
+
+<button id="yesBtn">YES</button>
+<button id="noBtn">NO</button>
+
+<div id="threatContainer" style="margin-top: 20px;"></div>
 
 <script>
-    const message = document.getElementById('message');
-    let mouseX = 0;
-    let mouseY = 0;
+    document.getElementById('yesBtn').onclick = function() {
+        document.body.innerHTML = "<h1>Thanks for buying the Philips PowerPro Compact FC9331/09! Your floors will thank you!</h1>";
+    }
 
-    // Update mouse coordinates on mouse move
-    document.addEventListener('mousemove', (event) => {
-        mouseX = event.pageX;
-        mouseY = event.pageY;
-    });
+    let threatIndex = 0;
 
-    // Teleport message to mouse position every second
-    setInterval(() => {
-        message.style.left = (mouseX) + 'px';
-        message.style.top = (mouseY - 30) + 'px'; // Adjust position above the cursor
-    }, 0);
+    document.getElementById('noBtn').onclick = function() {
+        document.getElementById('initialQuestion').classList.add('hidden'); // Hide the initial question
+        document.getElementById('yesBtn').classList.add('hidden'); // Hide the YES button
+        document.getElementById('noBtn').classList.add('hidden'); // Hide the NO button
+        showThreats();
+    }
+
+    function showThreats() {
+        const threatContainer = document.getElementById('threatContainer');
+        threatContainer.innerHTML = ""; // Clear previous threats
+        
+        let threats = [
+            "Oh, you think you can just walk away? Think again!",
+            "Your floors will cry out for help, and no one will hear them!",
+            "Dust bunnies will invade your home like an army!",
+            "Without this vacuum, your life will be full of dirt and despair!",
+            "Prepare for a never-ending cycle of vacuum-related regret!",
+            "You might find yourself drowning in dust – good luck with that!",
+            "Do you really want to live with crumbs from last week's pizza?",
+            "Think about the horror of a dusty carpet – the sheer terror!",
+            "Are you ready to face the wrath of an angry vacuum cleaner?",
+            "Ignoring this offer could lead to eternal dirtiness – no joke!"
+        ];
+
+        if (threatIndex < threats.length) {
+            threatContainer.innerHTML = "<p class='threat'>" + threats[threatIndex] + "</p>";
+            askToBuyAgain(threats.length - threatIndex - 1); // Pass remaining threats
+            threatIndex++;
+        } else {
+            finalChance();
+        }
+    }
+
+    function askToBuyAgain(remaining) {
+        const threatContainer = document.getElementById('threatContainer');
+        let buyAgainText = remaining > 0 ? "Now, will you buy the Philips PowerPro Compact FC9331/09?" : "LAST CHANCE! Will you buy the Philips PowerPro Compact FC9331/09?";
+        threatContainer.innerHTML += "<p>" + buyAgainText + "</p>";
+
+        let buyButtonText = remaining > 0 ? "BUY NOW!!!" : "PLEASE, just buy it!!!";
+        let noButtonText = remaining > 0 ? "Decline the godly offer from Philips" : "No, don't leave me hanging...";
+
+        let buyButton = document.createElement('button');
+        buyButton.textContent = buyButtonText;
+        buyButton.id = 'buyAgainYes';
+
+        let noButton = document.createElement('button');
+        noButton.textContent = noButtonText;
+        noButton.id = 'buyAgainNo';
+
+        threatContainer.appendChild(buyButton);
+        threatContainer.appendChild(noButton);
+
+        buyButton.onclick = function() {
+            document.body.innerHTML = "<h1>Thanks for buying the Philips PowerPro Compact FC9331/09! Your floors will thank you!</h1>";
+        }
+
+        noButton.onclick = function() {
+            threatContainer.innerHTML = ""; // Clear the container
+            showThreats(); // Show the next threat
+            updateButtons(remaining);
+        }
+    }
+
+    function updateButtons(remaining) {
+        const buyButton = document.getElementById('buyAgainYes');
+        const noButton = document.getElementById('buyAgainNo');
+
+        let offsetX = Math.random() * 100 - 50; // Random x offset
+        let offsetY = Math.random() * 100 - 50; // Random y offset
+
+        // Make the buttons move after the third threat
+        if (threatIndex > 2) {
+            buyButton.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+            noButton.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+
+            // Increase movement speed for threats after the third one
+            setTimeout(() => updateButtons(remaining), 500);
+        }
+        
+        // Change button texts progressively
+        if (threatIndex > 0) {
+            buyButton.textContent = remaining > 1 ? "Seriously, BUY NOW!!!" : "For the love of all that is holy, BUY NOW!!!";
+            noButton.textContent = remaining > 1 ? "Please, decline again..." : "NO, just go away...";
+        }
+    }
+
+    function finalChance() {
+        const threatContainer = document.getElementById('threatContainer');
+        threatContainer.innerHTML = "<p>Get outta here!!!</p>";
+        window.close(); // Attempt to close the tab
+    }
 </script>
 
 </body>
